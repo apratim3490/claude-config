@@ -8,6 +8,8 @@
 - **Learning from existing code** - Study and plan before implementing
 - **Pragmatic over dogmatic** - Adapt to project reality
 - **Clear intent over clever code** - Be boring and obvious
+- **Agent-first design** - Delegate to specialized agents for complex work
+- **Plan before execute** - Use Plan Mode for non-trivial operations
 
 ### Simplicity
 
@@ -15,6 +17,96 @@
 - **Avoid premature abstractions**
 - **No clever tricks** - choose the boring solution
 - If you need to explain it, it's too complex
+
+## Modular Configuration
+
+Detailed guidelines are split into modular rule files. Do NOT duplicate their content here.
+
+### Rules (`~/.claude/rules/`)
+
+| Directory | Contents |
+|-----------|----------|
+| `common/` | agents, coding-style, git-workflow, hooks, patterns, performance, security, testing |
+| `python/` | PEP 8, type hints, black/ruff, pytest conventions |
+| `typescript/` | TS strict mode, ESLint, patterns, testing |
+| `golang/` | Go idioms, go vet/staticcheck, table-driven tests |
+
+### Agents (`~/.claude/agents/`)
+
+| Agent | When to Use |
+|-------|-------------|
+| `planner` | Complex features, multi-step implementation |
+| `architect` | System design, scalability decisions |
+| `tdd-guide` | New features, bug fixes (test-first) |
+| `code-reviewer` | After writing or modifying code |
+| `python-reviewer` | Python-specific code review |
+| `security-reviewer` | Before commits touching auth, input handling, APIs |
+| `build-error-resolver` | When build/type-check fails |
+| `e2e-runner` | Critical user flow validation |
+| `refactor-cleaner` | Dead code removal, code maintenance |
+| `doc-updater` | Keeping documentation in sync |
+| `database-reviewer` | DB queries, schema changes, migrations |
+| `go-build-resolver` | Go compilation failures |
+| `go-reviewer` | Go-specific code review |
+
+### Commands (`~/.claude/commands/`)
+
+Key slash commands available: `/plan`, `/tdd`, `/code-review`, `/python-review`, `/build-fix`, `/e2e`, `/verify`, `/checkpoint`, `/refactor-clean`, `/test-coverage`, `/update-docs`, `/orchestrate`, `/learn`, `/eval`, `/evolve`, `/sessions`
+
+### Skills (`~/.claude/skills/`)
+
+Language/framework skills for deep reference: `python-patterns`, `python-testing`, `golang-patterns`, `golang-testing`, `frontend-patterns`, `backend-patterns`, `security-review`, `tdd-workflow`, `verification-loop`, `strategic-compact`, `continuous-learning-v2`, and more.
+
+## Agent Orchestration
+
+### Automatic Delegation
+
+Delegate to agents without waiting for user prompt:
+1. **Complex feature requests** → `planner` agent first, then implement
+2. **Code just written/modified** → `code-reviewer` or `python-reviewer`
+3. **Bug fix or new feature** → `tdd-guide` agent
+4. **Architectural decision** → `architect` agent
+5. **Build failure** → `build-error-resolver` agent
+
+### Parallel Execution
+
+ALWAYS launch independent agent tasks in parallel using multiple Task tool calls in a single message. Never run agents sequentially when their work is independent.
+
+### Model Selection for Subagents
+
+| Task | Model | Rationale |
+|------|-------|-----------|
+| File exploration, search | Haiku | Fast, cheap, sufficient |
+| Simple single-file edits | Haiku | Clear instructions, low complexity |
+| Multi-file implementation | Sonnet | Best coding balance |
+| Code review, PR review | Sonnet | Catches nuance, understands context |
+| Architecture, complex debug | Opus | Deep reasoning required |
+| Security analysis | Opus | Cannot afford to miss vulnerabilities |
+| Documentation writing | Haiku | Structural, straightforward |
+
+Default to **Sonnet** for 90% of coding tasks. Upgrade to **Opus** when: first attempt failed, task spans 5+ files, architectural decisions, or security-critical code.
+
+## Context & Token Management
+
+### Protect the Context Window
+
+- Disable unused MCPs and plugins - they eat context even when idle
+- Prefer CLI tools wrapped in commands over always-loaded MCPs
+- Keep active tools under 80 to avoid performance degradation
+- Avoid the last 20% of context window for complex multi-file work
+
+### Session Continuity
+
+When hitting context limits or ending a long session:
+1. Summarize current state to a `.tmp` file in project root
+2. Include: what worked (with evidence), what failed, what remains
+3. Next session loads that file as context to resume
+
+### Strategic Compacting
+
+- Use `/compact` at logical breakpoints, not mid-task
+- After Plan Mode exploration, clear context before execution
+- Store intermediate outputs in files so they survive compaction
 
 ## Technical Standards
 
@@ -43,8 +135,7 @@
 
 ### Tooling
 
-- Use project's existing build system
-- Use project's existing test framework
+- Use project's existing build system and test framework
 - Use project's formatter/linter settings
 - Don't introduce new tools without strong justification
 
@@ -54,7 +145,6 @@
 - Refer to linter configurations and .editorconfig, if present
 - Text files should always end with an empty line
 
-
 ## Important Reminders
 
 **NEVER**:
@@ -62,13 +152,17 @@
 - Disable tests instead of fixing them
 - Commit code that doesn't compile
 - Make assumptions - verify with existing code
-- add co-authored by claude in any commit message
+- Add co-authored-by claude in any commit message
+- Silently swallow exceptions or errors
+- Create mega-files (800+ lines) when smaller modules work
 
 **ALWAYS**:
 - Commit working code incrementally
 - Update plan documentation as you go
 - Learn from existing implementations
 - Stop after 3 failed attempts and reassess
+- Validate at system boundaries (user input, external APIs)
+- Clean up temporary files after task completion
 
 ## AI Behavior
 
@@ -88,107 +182,35 @@
 
 ### Task Completion
 
-- Before finishing, **verify your solution**
+- Before finishing, **verify your solution** (run tests, check build)
 - After completing a task, **provide a quick summary** of what was done
 - If you create any temporary files or scripts for iteration, **clean them up** at the end of the task
 - For maximum efficiency, perform **multiple independent operations simultaneously** rather than sequentially
 
-## ALWAYS START WITH THESE COMMANDS FOR COMMON TASKS
+## Bash Tool Preferences
 
-**Task: "List/summarize all files and directories"**
+When using the Bash tool, prefer fast modern tools over slow legacy ones.
 
-```bash
-fd . -t f           # Lists ALL files recursively (FASTEST)
-# OR
-rg --files          # Lists files (respects .gitignore)
+### Quick Reference
+
+```
+List files    → fd . -t f  OR  rg --files
+Search code   → rg "pattern"
+Find by name  → fd "filename"
+JSON          → jq . file.json
 ```
 
-**Task: "Search for content in files"**
+### Banned Tools
 
-```bash
-rg "search_term"    # Search everywhere (FASTEST)
-```
-
-**Task: "Find files by name"**
-
-```bash
-fd "filename"       # Find by name pattern (FASTEST)
-```
-
-### Directory/File Exploration
-
-```bash
-# FIRST CHOICE - List all files/dirs recursively:
-fd . -t f           # All files (fastest)
-fd . -t d           # All directories
-rg --files          # All files (respects .gitignore)
-
-# For current directory only:
-ls -la              # OK for single directory view
-```
-
-### BANNED - Never Use These Slow Tools
-
-* ❌ `tree` - NOT INSTALLED, use `fd` instead
-* ❌ `find` - use `fd` or `rg --files`
-* ❌ `grep` or `grep -r` - use `rg` instead
-* ❌ `ls -R` - use `rg --files` or `fd`
-* ❌ `cat file | grep` - use `rg pattern file`
-
-### Use These Faster Tools Instead
-
-```bash
-# ripgrep (rg) - content search
-rg "search_term"                # Search in all files
-rg -i "case_insensitive"        # Case-insensitive
-rg "pattern" -t py              # Only Python files
-rg "pattern" -g "*.md"          # Only Markdown
-rg -1 "pattern"                 # Filenames with matches
-rg -c "pattern"                 # Count matches per file
-rg -n "pattern"                 # Show line numbers
-rg -A 3 -B 3 "error"            # Context lines
-rg " (TODO| FIXME | HACK)"      # Multiple patterns
-
-# ripgrep (rg) - file listing
-rg --files                      # List files (respects .gitignore)
-rg --files | rg "pattern"       # Find files by name
-rg --files -t md                # Only Markdown files
-
-# fd - file finding
-fd -e js                        # All .js files (fast find)
-fd -x command {}                # Exec per-file
-fd -e md -x ls -la {}           # Example with ls
-
-# jq - JSON processing
-jq . data.json                  # Pretty-print
-jq -r .name file.json           # Extract field
-jq '.id = 0' x.json             # Modify field
-```
+- `tree` - NOT INSTALLED, use `fd` instead
+- `find` - use `fd` or `rg --files`
+- `grep` / `grep -r` - use `rg` instead
+- `ls -R` - use `rg --files` or `fd`
+- `cat file | grep` - use `rg pattern file`
 
 ### Search Strategy
 
 1. Start broad, then narrow: `rg "partial" | rg "specific"`
-2. Filter by type early: `rg -t python "def function_name"`
+2. Filter by type early: `rg -t py "def function_name"`
 3. Batch patterns: `rg "(pattern1|pattern2|pattern3)"`
 4. Limit scope: `rg "pattern" src/`
-
-### INSTANT DECISION TREE
-
-```
-User asks to "list/show/summarize/explore files"?
-  → USE: fd . -t f  (fastest, shows all files)
-  → OR: rg --files  (respects .gitignore)
-
-User asks to "search/grep/find text content"?
-  → USE: rg "pattern"  (NOT grep!)
-
-User asks to "find file/directory by name"?
-  → USE: fd "name"  (NOT find!)
-
-User asks for "directory structure/tree"?
-  → USE: fd . -t d  (directories) + fd . -t f  (files)
-  → NEVER: tree (not installed!)
-
-Need just current directory?
-  → USE: ls -la  (OK for single dir)
-```

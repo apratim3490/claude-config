@@ -1,0 +1,18 @@
+# Session and private data
+debug/
+file-history/
+projects/
+todos/
+plans/
+cache/
+statsig/
+shell-snapshots/
+ide/
+history.jsonl
+stats-cache.json
+plugins/known_marketplaces.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

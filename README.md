@@ -2,10 +2,29 @@
 
 Personal [Claude Code](https://docs.anthropic.com/en/docs/claude-code) configuration synced across machines.
 
+Based on [everything-claude-code](https://github.com/affaan-m/everything-claude-code) with personal customizations.
+
 ## What's included
 
-- **CLAUDE.md** - Global instructions loaded by Claude Code for every project (`~/.claude/CLAUDE.md`)
-- **setup.sh** - Script to symlink the config into place on a new machine
+| Directory | Contents |
+|-----------|----------|
+| `CLAUDE.md` | Global user-level instructions loaded for every project |
+| `settings.json` | Claude Code settings |
+| `package-manager.json` | Package manager config |
+| `agents/` | 13 specialized subagents (planner, architect, code-reviewer, security-reviewer, etc.) |
+| `rules/` | Modular rules: common + python + typescript + golang |
+| `commands/` | 31 slash commands (/plan, /tdd, /code-review, /build-fix, etc.) |
+| `skills/` | 32 skill directories (python-patterns, tdd-workflow, security-review, etc.) |
+| `contexts/` | Context presets for dev, research, review modes |
+| `hooks/` | Lifecycle hook configurations |
+| `mcp-configs/` | MCP server configurations |
+| `schemas/` | JSON schemas for hooks, plugins, package-manager |
+| `scripts/` | CI validators, hook scripts, utility libraries |
+| `tests/` | Test suites for hooks, integration, utilities |
+| `plugins/` | Plugin documentation |
+| `examples/` | Example CLAUDE.md files for reference |
+| `guides/` | Longform guide, shortform guide, llms.txt |
+| `assets/` | Images for the guides |
 
 ## Setup on a new machine
 
@@ -15,15 +34,13 @@ cd claude-config
 ./setup.sh
 ```
 
-This creates a symlink from `~/.claude/CLAUDE.md` to the repo, so edits stay in sync with git.
-
 ## Updating
 
-Edit `CLAUDE.md` in this repo (or via the symlink at `~/.claude/CLAUDE.md`), then commit and push:
+Edit files in this repo, then commit and push:
 
 ```bash
-cd ~/Developer/claude-config  # or wherever you cloned it
-git add -A && git commit -m "Update CLAUDE.md" && git push
+cd ~/Developer/claude-config
+git add -A && git commit -m "Update config" && git push
 ```
 
 On other machines, pull to get the latest:

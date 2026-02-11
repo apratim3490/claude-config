@@ -1,18 +1,30 @@
-#!/bin/bash
-# Symlinks CLAUDE.md from this repo into ~/.claude/
-# Run this after cloning on a new machine.
-
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-TARGET="$HOME/.claude/CLAUDE.md"
+CLAUDE_DIR="$HOME/.claude"
 
-mkdir -p "$HOME/.claude"
+mkdir -p "$CLAUDE_DIR"
 
-if [ -f "$TARGET" ] && [ ! -L "$TARGET" ]; then
-    echo "Backing up existing CLAUDE.md to CLAUDE.md.bak"
-    mv "$TARGET" "$TARGET.bak"
-fi
+# Directories to symlink
+dirs=(agents rules commands contexts hooks mcp-configs schemas scripts skills tests plugins examples guides assets)
 
-ln -sf "$SCRIPT_DIR/CLAUDE.md" "$TARGET"
-echo "Symlinked $TARGET -> $SCRIPT_DIR/CLAUDE.md"
+for dir in "${dirs[@]}"; do
+  if [ -d "$SCRIPT_DIR/$dir" ]; then
+    rm -rf "$CLAUDE_DIR/$dir"
+    ln -sfn "$SCRIPT_DIR/$dir" "$CLAUDE_DIR/$dir"
+    echo "Linked $dir/"
+  fi
+done
+
+# Individual files to symlink
+files=(CLAUDE.md settings.json package-manager.json)
+
+for file in "${files[@]}"; do
+  if [ -f "$SCRIPT_DIR/$file" ]; then
+    ln -sf "$SCRIPT_DIR/$file" "$CLAUDE_DIR/$file"
+    echo "Linked $file"
+  fi
+done
+
+echo "Done. Claude Code config is now synced from $SCRIPT_DIR"
