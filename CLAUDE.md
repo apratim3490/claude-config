@@ -126,6 +126,14 @@ When hitting context limits or ending a long session:
 
 ## Project Integration
 
+### Project Summary (`project.md`)
+
+Every project should have a `project.md` in its root as a quick-reference summary.
+
+1. **Create if missing**: At the start of a session, if `project.md` does not exist in the project root, explore the codebase and create one summarizing: purpose, architecture, key modules, data flow, dependencies, testing strategy, and any notable design decisions.
+2. **Read first**: When trying to understand project structure, intent, or architecture, **read `project.md` first** before running any exploratory commands (grep, glob, file reads). Only dig deeper if `project.md` doesn't answer the question.
+3. **Keep it current**: After any significant change (new modules, architectural shifts, dependency changes, new phases/milestones), update `project.md` to reflect the current state of the project.
+
 ### Learn the Codebase
 
 - Find similar features/components
