@@ -108,6 +108,13 @@ When hitting context limits or ending a long session:
 - After Plan Mode exploration, clear context before execution
 - Store intermediate outputs in files so they survive compaction
 
+### Post-Compaction Recovery
+
+After every context compaction, you MUST:
+1. Re-read ALL CLAUDE.md files (user-level `~/.claude/CLAUDE.md` AND project-level `CLAUDE.md`)
+2. Re-apply any output format, tone, teaching style, or behavioral rules defined in them
+3. Do NOT revert to default behavior — CLAUDE.md instructions are mandatory and persist across the entire session
+
 ## Technical Standards
 
 ### Architecture Principles
