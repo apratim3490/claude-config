@@ -3,6 +3,16 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:\\Users\\aprat\\.claude\\hooks\\context-handover.js\""
+          }
+        ],
+        "description": "Track context usage and trigger handover at ~75% capacity"
+      },
+      {
         "matcher": "tool == \"Bash\" && tool_input.command matches \"(npm run dev|pnpm( run)? dev|yarn dev|bun run dev)\"",
         "hooks": [
           {
