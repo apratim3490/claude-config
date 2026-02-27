@@ -7,7 +7,7 @@ CLAUDE_DIR="$HOME/.claude"
 mkdir -p "$CLAUDE_DIR"
 
 # Directories to symlink
-dirs=(agents rules commands contexts hooks mcp-configs schemas scripts skills tests plugins examples guides assets)
+dirs=(agents rules rules-lang commands contexts hooks mcp-configs schemas scripts skills tests plugins examples guides assets)
 
 for dir in "${dirs[@]}"; do
   if [ -d "$SCRIPT_DIR/$dir" ]; then
@@ -27,4 +27,9 @@ for file in "${files[@]}"; do
   fi
 done
 
+echo ""
 echo "Done. Claude Code config is now synced from $SCRIPT_DIR"
+echo ""
+echo "Language rules (python, golang, typescript) are NOT loaded globally."
+echo "To enable them for a project, run:"
+echo "  $SCRIPT_DIR/enable-lang.sh <python|golang|typescript|all> /path/to/project"
