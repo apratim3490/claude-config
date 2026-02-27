@@ -10,7 +10,25 @@ shell-snapshots/
 ide/
 history.jsonl
 stats-cache.json
+mcp-needs-auth-cache.json
+session-env/
+backups/
+downloads/
+telemetry/
+
+# Machine-specific settings (session permissions, allowed dirs)
+settings.local.json
+
+# Plugin caches
 plugins/known_marketplaces.json
+plugins/blocklist.json
+plugins/*.tmp
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store

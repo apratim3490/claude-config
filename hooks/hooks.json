@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:\\Users\\aprat\\.claude\\hooks\\context-handover.js\""
+            "command": "python3 \"$HOME/.claude/hooks/context-handover.py\""
           }
         ],
         "description": "Track context usage and trigger handover at ~75% capacity"

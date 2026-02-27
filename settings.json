@@ -1,25 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "permissions": {
-    "allow": [
-      "Bash(podman exec whatsapp-mcp_whatsapp-bridge_1 wget -qO- http://localhost:8080/api/health)",
-      "Bash(podman exec whatsapp-mcp_whatsapp-bridge_1 wget -O- --header='Content-Type: application/json' --post-data='{\"\"recipient\"\":\"\"test\"\",\"\"message\"\":\"\"test\"\"}' http://localhost:8080/api/send)",
-      "Bash(podman logs --tail 5 whatsapp-mcp_whatsapp-mcp_1)",
-      "Bash(git status -u)",
-      "Bash(git add docker-compose.yaml setup.sh start.sh whatsapp-bridge/internal/api/server.go whatsapp-mcp-server/main.py README.md)",
-      "Bash(git commit:*)",
-      "Bash(git push origin main)",
-      "Bash(curl -sf --max-time 2 http://127.0.0.1:8080/)",
-      "Read(//private/tmp/**)",
-      "Bash(brew --prefix node)",
-      "Bash(/usr/local/bin/node --version)",
-      "Bash(/opt/homebrew/bin/node --version)",
-      "Bash(brew list node)"
-    ],
-    "additionalDirectories": [
-      "/Users/apratimshukla/.claude"
-    ]
-  },
   "hooks": {
     "PreToolUse": [
       {
