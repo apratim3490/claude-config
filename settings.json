@@ -7,7 +7,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/context-handover.py\""
+            "command": "python3 -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','init-read-claudemd.py'),run_name='__main__')\""
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','context-handover.py'),run_name='__main__')\""
           }
         ]
       }
