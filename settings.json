@@ -7,18 +7,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','init-read-claudemd.py'),run_name='__main__')\""
+            "command": "(python3 -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','init-read-claudemd.py'),run_name='__main__')\" 2>/dev/null || python -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','init-read-claudemd.py'),run_name='__main__')\")"
           }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -c \"import os,runpy;runpy.run_path(os.path.join(os.path.expanduser('~'),'.claude','hooks','context-handover.py'),run_name='__main__')\""
-          }
-        ]
+        ],
+        "description": "Read CLAUDE.md files on first tool call of each session"
       }
     ]
   },
