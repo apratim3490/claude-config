@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/context-handover.py\""
+            "command": "$(python3 --version >/dev/null 2>&1 && echo python3 || echo python) \"$HOME/.claude/hooks/context-handover.py\""
           }
         ],
         "description": "Track context usage and trigger handover at ~75% capacity"
@@ -57,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/suggest-compact.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/suggest-compact.js\""
           }
         ],
         "description": "Suggest manual compaction at logical intervals"
@@ -69,7 +69,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/pre-compact.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/pre-compact.js\""
           }
         ],
         "description": "Save state before context compaction"
@@ -81,7 +81,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/session-start.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/session-start.js\""
           }
         ],
         "description": "Load previous context and detect package manager on new session"
@@ -147,7 +147,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/check-console-log.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/check-console-log.js\""
           }
         ],
         "description": "Check for console.log in modified files after each response"
@@ -159,7 +159,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/session-end.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/session-end.js\""
           }
         ],
         "description": "Persist session state on end"
@@ -169,7 +169,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/evaluate-session.js\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude}/scripts/hooks/evaluate-session.js\""
           }
         ],
         "description": "Evaluate session for extractable patterns"
